@@ -1,0 +1,6 @@
+# ansible/inventory
+[web]
+52.55.60.90 ansible_ssh_user=ec2-user
+
+[db]
+54.89.188.104 ansible_ssh_user=ec2-user

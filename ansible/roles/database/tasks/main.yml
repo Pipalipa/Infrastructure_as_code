@@ -1,0 +1,34 @@
+- name: Install PostgreSQL
+  yum:
+    name: postgresql-server
+    state: present
+
+- name: Initialize PostgreSQL Database
+  command: /usr/bin/postgresql-setup initdb
+  args:
+    creates: /var/lib/pgsql/data/PG_VERSION
+
+- name: Ensure PostgreSQL is running
+  service:
+    name: postgresql
+    state: started
+    enabled: true
+
+- name: Ensure PostgreSQL is listening on all interfaces
+  lineinfile:
+    path: /var/lib/pgsql/data/postgresql.conf
+    regexp: '^#listen_addresses'
+    line: "listen_addresses = '*'"
+    state: present
+
+- name: Configure PostgreSQL access
+  lineinfile:
+    path: /var/lib/pgsql/data/pg_hba.conf
+    regexp: '^host'
+    line: "host all all 0.0.0.0/0 md5"
+    state: present
+
+- name: Reload PostgreSQL configuration
+  service:
+    name: postgresql
+    state: reloaded
